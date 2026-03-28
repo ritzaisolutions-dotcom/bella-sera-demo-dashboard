@@ -4,41 +4,52 @@ interface StatsBarProps {
   reservations: Reservation[]
 }
 
-function getThisMonthReservations(reservations: Reservation[]): Reservation[] {
-  const now = new Date()
-  const year = now.getFullYear()
-  const month = now.getMonth()
-  return reservations.filter((r) => {
-    const d = new Date(r.date + 'T00:00:00')
-    return d.getFullYear() === year && d.getMonth() === month
-  })
+function startOfDay(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate())
+}
+
+function startOfWeek(d: Date): Date {
+  const day = d.getDay() // 0=Sun
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1) // Mon start
+  return new Date(d.getFullYear(), d.getMonth(), diff)
 }
 
 export default function StatsBar({ reservations }: StatsBarProps) {
-  const thisMonth = getThisMonthReservations(reservations)
-  const totalReservations = thisMonth.length
-  const totalCovers = thisMonth.reduce((sum, r) => sum + r.party_size, 0)
-  const marketingCount = thisMonth.filter((r) => r.marketing_consent).length
-  const marketingRate =
-    totalReservations > 0
-      ? Math.round((marketingCount / totalReservations) * 100)
-      : 0
+  const now = new Date()
+  const todayStart = startOfDay(now)
+  const weekStart = startOfWeek(now)
+
+  const todayCovers = reservations
+    .filter((r) => {
+      if (!r.date) return false
+      const d = new Date(r.date + 'T00:00:00')
+      return d >= todayStart && d < new Date(todayStart.getTime() + 86400000)
+    })
+    .reduce((sum, r) => sum + (r.party_size ?? 0), 0)
+
+  const thisWeekCount = reservations.filter((r) => {
+    if (!r.date) return false
+    const d = new Date(r.date + 'T00:00:00')
+    return d >= weekStart && d <= now
+  }).length
+
+  const pendingCount = reservations.filter((r) => r.status === 'pending').length
 
   const stats = [
     {
-      label: 'Reservations this month',
-      value: totalReservations.toString(),
-      sub: 'bookings',
+      label: "Today's covers",
+      value: todayCovers.toString(),
+      sub: 'guests booked today',
     },
     {
-      label: 'Total covers this month',
-      value: totalCovers.toString(),
-      sub: 'guests',
+      label: 'This week',
+      value: thisWeekCount.toString(),
+      sub: 'reservations',
     },
     {
-      label: 'Marketing consent rate',
-      value: `${marketingRate}%`,
-      sub: 'opted in',
+      label: 'Awaiting confirmation',
+      value: pendingCount.toString(),
+      sub: 'pending',
     },
   ]
 

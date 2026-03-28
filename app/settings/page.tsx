@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Logo from '@/components/Logo'
+import SignOutButton from '@/components/SignOutButton'
 
 type Tab = 'password' | 'api-keys'
 
@@ -269,12 +270,7 @@ export default function SettingsPage() {
               Settings
             </a>
             <div className="w-px h-4 bg-brand-border mx-2" />
-            <a
-              href="/api/auth/logout"
-              className="px-4 py-2 text-xs uppercase tracking-widest text-brand-muted hover:text-brand-text transition"
-            >
-              Sign Out
-            </a>
+            <SignOutButton />
           </nav>
         </div>
       </header>

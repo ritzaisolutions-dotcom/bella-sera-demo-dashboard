@@ -5,14 +5,15 @@ export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled'
 export interface Reservation {
   id: string
   created_at: string
-  date: string
-  time: string
-  name: string
-  phone: string
-  party_size: number
+  date: string | null
+  time: string | null
+  name: string | null
+  email: string | null
+  phone: string | null
+  party_size: number | null
   notes: string | null
-  status: ReservationStatus
-  marketing_consent: boolean
+  status: ReservationStatus | null
+  marketing_consent: boolean | null
 }
 
 export function createServerSupabaseClient() {
