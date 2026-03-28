@@ -9,7 +9,7 @@ interface ReservationsTableProps {
 }
 
 const STATUS_OPTIONS: { value: ReservationStatus | 'all'; label: string }[] = [
-  { value: 'all', label: 'All statuses' },
+  { value: 'all', label: 'All Statuses' },
   { value: 'pending', label: 'Pending' },
   { value: 'confirmed', label: 'Confirmed' },
   { value: 'cancelled', label: 'Cancelled' },
@@ -28,10 +28,7 @@ function formatTime(timeStr: string): string {
   const [hours, minutes] = timeStr.split(':')
   const date = new Date()
   date.setHours(parseInt(hours, 10), parseInt(minutes, 10))
-  return date.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
 }
 
 export default function ReservationsTable({ reservations }: ReservationsTableProps) {
@@ -46,15 +43,24 @@ export default function ReservationsTable({ reservations }: ReservationsTablePro
     <div className="space-y-4">
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-base font-semibold">
-          Reservations
-          <span className="ml-2 text-zinc-500 font-normal text-sm">({filtered.length})</span>
-        </h2>
+        <div>
+          <p className="text-brand-gold text-xs uppercase tracking-widest font-medium mb-0.5">
+            Table
+          </p>
+          <h3 className="font-serif text-lg text-brand-text">
+            All Reservations{' '}
+            <span className="text-brand-muted font-sans text-sm font-normal">
+              ({filtered.length})
+            </span>
+          </h3>
+        </div>
+
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as ReservationStatus | 'all')}
-          className="bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm
-                     text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 cursor-pointer"
+          className="bg-brand-surface border border-brand-border rounded-lg px-4 py-2 text-xs
+                     text-brand-text uppercase tracking-widest focus:outline-none focus:border-brand-gold
+                     focus:ring-1 focus:ring-brand-gold cursor-pointer transition"
         >
           {STATUS_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -64,49 +70,53 @@ export default function ReservationsTable({ reservations }: ReservationsTablePro
         </select>
       </div>
 
+      {/* Gold divider */}
+      <div className="h-px bg-gradient-to-r from-brand-gold via-brand-gold/40 to-transparent opacity-30" />
+
       {/* Desktop table */}
-      <div className="hidden sm:block overflow-x-auto rounded-xl border border-zinc-800">
+      <div className="hidden sm:block overflow-x-auto rounded-xl border border-brand-border">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-zinc-800 bg-zinc-900/50">
-              {['Date', 'Time', 'Name', 'Phone', 'Party', 'Notes', 'Status', 'Marketing'].map(
-                (h) => (
-                  <th
-                    key={h}
-                    className="px-4 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider whitespace-nowrap"
-                  >
-                    {h}
-                  </th>
-                )
-              )}
+            <tr className="border-b border-brand-border bg-brand-surface">
+              {['Date', 'Time', 'Name', 'Phone', 'Party', 'Notes', 'Status', 'Marketing'].map((h) => (
+                <th
+                  key={h}
+                  className="px-4 py-3 text-left text-xs font-medium text-brand-gold uppercase tracking-widest whitespace-nowrap"
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-800">
+          <tbody className="divide-y divide-brand-border">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-4 py-12 text-center text-zinc-500">
+                <td colSpan={8} className="px-4 py-16 text-center text-brand-muted font-serif italic text-lg">
                   No reservations found
                 </td>
               </tr>
             ) : (
               filtered.map((r) => (
-                <tr key={r.id} className="hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 whitespace-nowrap">{formatDate(r.date)}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{formatTime(r.time)}</td>
-                  <td className="px-4 py-3 font-medium whitespace-nowrap">{r.name}</td>
-                  <td className="px-4 py-3 text-zinc-400 whitespace-nowrap">{r.phone}</td>
-                  <td className="px-4 py-3 text-center">{r.party_size}</td>
-                  <td className="px-4 py-3 text-zinc-400 max-w-[200px] truncate">
-                    {r.notes || '—'}
+                <tr
+                  key={r.id}
+                  className="hover:bg-brand-surface/60 transition-colors group"
+                >
+                  <td className="px-4 py-3.5 whitespace-nowrap text-brand-text">{formatDate(r.date)}</td>
+                  <td className="px-4 py-3.5 whitespace-nowrap text-brand-muted">{formatTime(r.time)}</td>
+                  <td className="px-4 py-3.5 font-medium text-brand-text whitespace-nowrap">{r.name}</td>
+                  <td className="px-4 py-3.5 text-brand-muted whitespace-nowrap">{r.phone}</td>
+                  <td className="px-4 py-3.5 text-center text-brand-text">{r.party_size}</td>
+                  <td className="px-4 py-3.5 text-brand-muted max-w-[180px] truncate">
+                    {r.notes || <span className="text-brand-border">—</span>}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3.5">
                     <StatusBadge status={r.status} />
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-3.5 text-center">
                     {r.marketing_consent ? (
-                      <span className="text-green-400 text-xs font-medium">Yes</span>
+                      <span className="text-brand-green text-xs font-medium tracking-wide">Yes</span>
                     ) : (
-                      <span className="text-zinc-500 text-xs">No</span>
+                      <span className="text-brand-border text-xs">No</span>
                     )}
                   </td>
                 </tr>
@@ -116,36 +126,38 @@ export default function ReservationsTable({ reservations }: ReservationsTablePro
         </table>
       </div>
 
-      {/* Mobile card list */}
+      {/* Mobile cards */}
       <div className="sm:hidden space-y-3">
         {filtered.length === 0 ? (
-          <p className="text-center text-zinc-500 py-12">No reservations found</p>
+          <p className="text-center text-brand-muted font-serif italic py-12">No reservations found</p>
         ) : (
           filtered.map((r) => (
             <div
               key={r.id}
-              className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-2"
+              className="bg-brand-surface border border-brand-border rounded-xl p-4 space-y-3"
             >
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-gold to-transparent opacity-20" />
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <p className="font-medium">{r.name}</p>
-                  <p className="text-xs text-zinc-400 mt-0.5">
-                    {formatDate(r.date)} at {formatTime(r.time)}
+                  <p className="font-medium text-brand-text">{r.name}</p>
+                  <p className="text-xs text-brand-muted mt-0.5">
+                    {formatDate(r.date)} · {formatTime(r.time)}
                   </p>
                 </div>
                 <StatusBadge status={r.status} />
               </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-400">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-brand-muted">
                 <span>{r.phone}</span>
-                <span>
-                  {r.party_size} {r.party_size === 1 ? 'person' : 'people'}
-                </span>
+                <span className="text-brand-border">·</span>
+                <span>{r.party_size} {r.party_size === 1 ? 'guest' : 'guests'}</span>
                 {r.marketing_consent && (
-                  <span className="text-green-400 text-xs font-medium">Marketing: Yes</span>
+                  <span className="text-brand-green text-xs font-medium">Marketing ✓</span>
                 )}
               </div>
               {r.notes && (
-                <p className="text-xs text-zinc-500 border-t border-zinc-800 pt-2">{r.notes}</p>
+                <p className="text-xs text-brand-muted border-t border-brand-border pt-2 italic">
+                  {r.notes}
+                </p>
               )}
             </div>
           ))

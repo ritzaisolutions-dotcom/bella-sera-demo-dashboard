@@ -25,9 +25,21 @@ export default function StatsBar({ reservations }: StatsBarProps) {
       : 0
 
   const stats = [
-    { label: 'Reservations this month', value: totalReservations.toString() },
-    { label: 'Total covers this month', value: totalCovers.toString() },
-    { label: 'Marketing consent rate', value: `${marketingRate}%` },
+    {
+      label: 'Reservations this month',
+      value: totalReservations.toString(),
+      sub: 'bookings',
+    },
+    {
+      label: 'Total covers this month',
+      value: totalCovers.toString(),
+      sub: 'guests',
+    },
+    {
+      label: 'Marketing consent rate',
+      value: `${marketingRate}%`,
+      sub: 'opted in',
+    },
   ]
 
   return (
@@ -35,12 +47,18 @@ export default function StatsBar({ reservations }: StatsBarProps) {
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-4"
+          className="bg-brand-surface border border-brand-border rounded-xl px-6 py-5 relative overflow-hidden group"
         >
-          <p className="text-zinc-400 text-xs font-medium uppercase tracking-wider">
+          {/* Subtle gold accent line */}
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-gold to-transparent opacity-40" />
+
+          <p className="text-brand-muted text-xs uppercase tracking-widest font-medium">
             {stat.label}
           </p>
-          <p className="text-3xl font-bold mt-1.5 tabular-nums">{stat.value}</p>
+          <p className="text-4xl font-serif font-semibold text-brand-gold mt-2 tabular-nums">
+            {stat.value}
+          </p>
+          <p className="text-brand-muted text-xs mt-1 uppercase tracking-wider">{stat.sub}</p>
         </div>
       ))}
     </div>
