@@ -253,7 +253,7 @@ export default function ReservationsTable({ reservations }: ReservationsTablePro
                     {formatDate(r.date)} · {formatTime(r.time)}
                   </p>
                 </div>
-                <StatusBadge status={r.status} />
+                <StatusBadge status={r.status ?? 'pending'} />
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-brand-muted">
                 <span>{r.phone}</span>
