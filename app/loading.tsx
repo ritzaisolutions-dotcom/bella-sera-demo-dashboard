@@ -1,9 +1,10 @@
 import Logo from '@/components/Logo'
 
-function Skeleton({ className }: { className?: string }) {
+function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={`bg-brand-surface rounded animate-pulse ${className ?? ''}`}
+      {...props}
     />
   )
 }
